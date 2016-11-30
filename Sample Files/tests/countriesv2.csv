@@ -1,0 +1,5 @@
+Address,ID,Popularity,Temperature
+TEXT,INT,INT,INT
+Greece,1,2000,20
+Aith,1,500,30
+Italy,1,12123,12
