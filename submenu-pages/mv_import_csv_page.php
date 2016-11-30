@@ -6,7 +6,7 @@
  * Time: 9:21 PM
  */
 
-function Import_CSV_File()
+function mv_import_csv_page()
 {
     include "CSV-import/Quick-CSV-import.php"; // Have you class seperate from your working code.
 

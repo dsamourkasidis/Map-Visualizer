@@ -5,7 +5,7 @@
  * Date: 7/4/2015
  * Time: 1:09 AM
  */
-function visualize_func($atts)
+function mv_visualize($atts)
 {
     $a = shortcode_atts(array(
         'file_name' => 'f_name',

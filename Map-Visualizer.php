@@ -10,30 +10,30 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 
 //Hook up to the init action
-add_action( 'init', 'init_map_visualizer' ) ;
+add_action( 'init', 'mv_init' ) ;
 
 
-function init_map_visualizer(){
+function mv_init(){
 
     //Register menu pages
-    add_action( 'admin_menu', 'plugin_menu');
+    add_action( 'admin_menu', 'mv_menu');
 
     //Register the shortcode
-    include 'visualization-shortcode/visualization_shortcode.php';
-    add_shortcode('visualize', 'visualize_func');
+    include 'visualization-shortcode/mv_visualize.php';
+    add_shortcode('visualize', 'mv_visualize');
 
 }
 
-function plugin_menu()
+function mv_menu()
 {
-    add_menu_page('Map Visualizer', 'Map Visualizer', 'publish_posts', 'my-plugin-settings', 'index_page', 'dashicons-admin-generic');
-    add_submenu_page('my-plugin-settings', 'Import', 'Import CSV File', 'publish_posts', 'import-page', 'Import_CSV_File');
-    add_submenu_page('my-plugin-settings', 'Create', 'Create New File', 'publish_posts', 'creation-page', 'Create_New_File');
-    add_submenu_page('my-plugin-settings', 'netcdf-import', 'Import netcdf File', 'publish_posts', 'netcd', 'Import_netcdf_File');
-    add_submenu_page('my-plugin-settings', 'File-list', 'List All Files', 'publish_posts', 'list-page', 'List_All_Files');
-    include 'submenu-pages/index.php';
-    include 'submenu-pages/Import-CSV-File.php';
-    include 'submenu-pages/List-All-Files.php';
-    include 'submenu-pages/Create-New-File.php';
-    include 'submenu-pages/Import-netcdf-File.php';
+    add_menu_page('Map Visualizer', 'Map Visualizer', 'publish_posts', 'mv_menu', 'mv_index_page', 'dashicons-admin-generic');
+    add_submenu_page('mv_menu', 'Import', 'Import CSV File', 'publish_posts', 'mv_import_page', 'mv_import_csv_page');
+    add_submenu_page('mv_menu', 'netcdf-import', 'Import netCDF File', 'publish_posts', 'mv_netcdf', 'mv_import_netcdf_page');
+    add_submenu_page('mv_menu', 'Create', 'Create New File', 'publish_posts', 'mv_creation_page', 'mv_create_file_page');
+    add_submenu_page('mv_menu', 'File-list', 'List All Files', 'publish_posts', 'mv_list_page', 'mv_list_all_files');
+    include 'submenu-pages/mv_index.php';
+    include 'submenu-pages/mv_import_csv_page.php';
+    include 'submenu-pages/mv_import_netcdf_page.php';
+    include 'submenu-pages/mv_create_file_page.php';
+    include 'submenu-pages/mv_list_all_files.php';
 }

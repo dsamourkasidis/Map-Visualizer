@@ -5,7 +5,7 @@
  * Date: 7/4/2015
  * Time: 1:13 AM
  */
-function index_page()
+function mv_index_page()
 {
     ?>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>

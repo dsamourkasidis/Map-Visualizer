@@ -9,7 +9,7 @@
 add_action('admin_init', 'checkexport');
 
 
-function List_All_Files()
+function mv_list_all_files()
 {
     $myfile = fopen(dirname(__FILE__) . "/Imported_files.txt", "r") or die("Unable to open file!");
     if (isset($_POST["delete"]) && "" != $_POST["delete"])     //delete button is submitted

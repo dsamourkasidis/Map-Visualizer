@@ -7,7 +7,7 @@
  */
 // Check that the nonce is valid, and the user can edit this post.
 
-function Import_netcdf_File(){
+function mv_import_netcdf_page(){
 ?>
     <h2>NETCDF import</h2>
     <p>The netcdf format supported is the two-dimensional. This means that the two dimensions should be Latitude and Longitude. The available types
