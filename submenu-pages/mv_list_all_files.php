@@ -54,12 +54,10 @@ function mv_list_all_files()
             border-collapse: collapse;
             /*background-color: #0000cc;*/
         }
-
         th, td {
             padding: 15px;
 
         }
-
         table#tb1 {
             background-color: #ffffff;
         }
@@ -101,7 +99,7 @@ function mv_list_all_files()
 
        </p>
     <form id="frm1" method="post" enctype="multipart/form-data">
-        <table id="tb1" cellspacing="0" style="width:auto;">
+        <table id="tb1" cellspacing="0" style="width:auto; background-color: inherit";>
             <thead>
             <tr>
                 <th scope="col">
@@ -122,16 +120,16 @@ function mv_list_all_files()
                 $name = fgets($myfile);
                 ?>
                 <tr>
-                    <td>
+                    <td align="center">
                         <input type="checkbox" name="select[]" value="<?php echo htmlspecialchars($name) ?>"
                     </td>
                     <td>
                         <?php
-                        echo $name;
+                        echo esc_html($name);
                         ?>
                     </td>
                     <td>
-                        <input type="text" name="name[]" value='[visualize file_name="<?php echo str_replace("\r\n", '', $name) ?>"'  >
+                        <input type="text" name="name[]" value='[visualize file_name="<?php echo esc_html(str_replace("\r\n", '', $name)); ?>"'  >
                         <select name="map[]">
                             <option value="Streets">map = "Streets"</option>
                             <option value="Satellite">map = "Satellite"</option>

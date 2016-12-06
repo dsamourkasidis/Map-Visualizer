@@ -28,14 +28,16 @@ function mv_import_netcdf_page(){
     </div>
     <div>
         <h4>Issues with Wordpress</h4>
-        <b>.nc Extension:</b>
+        <b>1) Please make sure you have the latest Java installed on your machine</b>
+        <br>
+        <b>2) .nc Extension:</b>
         Wordpress does not allow the upload of unregistered file types due to security reasons. This means, you should add
         the .nc extension to the list of permitted extensions by following the instructions linked here:
         <a href="http://www.wpbeginner.com/wp-tutorials/how-to-add-additional-file-types-to-be-uploaded-in-wordpress/" target="_blank">Add .nc extension</a>.
         Alternatively, there is plugin that allows you to add new extension and can be downloaded here:
         <a href="https://wordpress.org/plugins/enhanced-media-library/" target="_blank">Enhanced Media Library Plugin</a>.
         <br>
-        <b>File Size:</b>
+        <b>3) File Size:</b>
         Wordpress has a limit for the maximum file size that can be uploaded, depending on the web hosting company you choose and the package you select.
         You can view it on the "Media Uploader" page and can increase it, if necessary, following the instructions linked here:
         <a href="http://www.wpbeginner.com/wp-tutorials/how-to-increase-the-maximum-file-upload-size-in-wordpress/" target="_blank">Increase file size</a>

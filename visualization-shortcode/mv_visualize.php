@@ -60,24 +60,22 @@ function mv_visualize($atts)
         var mapboxTiles2 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.m3en6deb/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
             attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
         });
-        var file_name = "<?php echo $a['file_name']; ?>";
+        var file_name = "<?php echo esc_js($a['file_name']); ?>";
         var baseMaps = {
             "Satellite": mapboxTiles2,
             "Streets": mapboxTiles1
         };
         L.control.layers(baseMaps).addTo(map);
         //Checking if map_type is "Streets" or "Satellite"
-        <?php if ($map_type == 'Streets') {
-        ?>
+        <?php if ($map_type == 'Streets') { ?>
         map.addLayer(mapboxTiles1)
             .setView([42.3610, -71.0587], 3);
         <?php
-           }elseif ($map_type == 'Satellite') {
-        ?>
+           }elseif ($map_type == 'Satellite') { ?>
         map.addLayer(mapboxTiles2)
             .setView([42.3610, -71.0587], 3);
         <?php
-           }else { echo 'not available map'; }
+           }//else { echo 'not available map'; }
            $max = NULL;
            $min = NULL;
            $once =0;
@@ -97,27 +95,27 @@ function mv_visualize($atts)
                        if ($zoom == 3){
                            if ($center_point == 'default'){
                                 ?>
-        map.setView(<?php echo "[".$latitude.",".$longitude."],3" ?>);
+        map.setView(<?php echo esc_js("[".$latitude.",".$longitude."],3"); ?>);
         <?php
                                   }else{
                                        $cnt_coords = getcoord($center_point);
                                        $cnt_latitude = $cnt_coords['latitude'];
                                        $cnt_longitude = $cnt_coords['longitude'];
                                        ?>
-        map.setView(<?php echo "[".$cnt_latitude.",".$cnt_longitude."],3" ?>);
+        map.setView(<?php echo esc_js("[".$cnt_latitude.",".$cnt_longitude."],3"); ?>);
         <?php
                                   }
                               }else{
                                    if ($center_point == 'default'){
                                        ?>
-        map.setView(<?php echo "[".$latitude.",".$longitude."],".$zoom ?>);
+        map.setView(<?php echo esc_js("[".$latitude.",".$longitude."],".$zoom); ?>);
         <?php
                                    }else{
                                        $cnt_coords = getcoord($center_point);
                                        $cnt_latitude = $cnt_coords['latitude'];
                                        $cnt_longitude = $cnt_coords['longitude'];
                                        ?>
-        map.setView(<?php echo "[".$cnt_latitude.",".$cnt_longitude."],".$zoom ?>);
+        map.setView(<?php echo esc_js("[".$cnt_latitude.",".$cnt_longitude."],".$zoom); ?>);
         <?php
                               }
                               }
@@ -146,28 +144,28 @@ function mv_visualize($atts)
                                   }
                                ?>
         //Creating CircleMarkers
-        L.circleMarker([<?php echo $latitude ?>, <?php echo $longitude ?>], {
+        L.circleMarker([<?php echo esc_js($latitude); ?>, <?php echo esc_js($longitude); ?>], {
             stroke: false,
-            radius: <?php if (isset($radius)) { echo $radius; }else { echo 5; } ?>,
+            radius: <?php if (isset($radius)) { echo esc_js($radius); }else { echo esc_js(5); } ?>,
             opacity: 0.1,
-            fillOpacity: <?php if (isset($fill_opacity)) { echo $fill_opacity; }else { echo 0.3; } ?>,
-            color: '<?php if (isset($color)) { echo $color; }else { echo '#800026'; } ?>'
+            fillOpacity: <?php if (isset($fill_opacity)) { echo esc_js($fill_opacity); }else { echo esc_js(0.3); } ?>,
+            color: '<?php if (isset($color)) { echo esc_js($color); }else { echo esc_js('#800026'); } ?>'
         }).addTo(map)
-            .bindPopup("<?php foreach($col_names as $col_name): echo $col_name;?> : <?php echo str_replace("\r", '', $row[$col_name]); ?> <br> <?php endforeach; ?>");
+            .bindPopup("<?php foreach($col_names as $col_name): echo esc_js($col_name); ?> : <?php echo esc_js(str_replace("\r", '', $row[$col_name])); ?> <br> <?php endforeach; ?>");
         <?php
     } elseif ($marker_type == 'simple marker') {
             //Creating Simple Markers
     if (array_key_exists($category,$row)){
       ?>
-        L.marker([<?php echo $latitude?>, <?php echo $longitude?>])
+        L.marker([<?php echo esc_js($latitude); ?>, <?php echo esc_js($longitude); ?>])
             .addTo(map)
-            .bindPopup("<?php echo $category;?> : <?php echo str_replace("\r", '', $row[$category]); ?> <br> ");
+            .bindPopup("<?php echo esc_js($category); ?> : <?php echo esc_js(str_replace("\r", '', $row[$category])); ?> <br> ");
         <?php
         }else{
               ?>
-        L.marker([<?php echo $latitude?>, <?php echo $longitude?>])
+        L.marker([<?php echo esc_js($latitude); ?>, <?php echo esc_js($longitude); ?>])
             .addTo(map)
-            .bindPopup("<?php foreach($col_names as $col_name): echo $col_name;?> : <?php echo str_replace("\r", '', $row[$col_name]); ?> <br> <?php endforeach; ?>");
+            .bindPopup("<?php foreach($col_names as $col_name): echo esc_js($col_name); ?> : <?php echo esc_js(str_replace("\r", '', $row[$col_name])); ?> <br> <?php endforeach; ?>");
         <?php
         }
 }else { echo 'not available marker'; }
@@ -214,19 +212,19 @@ $first = $cords[$i];
 $last = end($cords);
 }
 ?>
-        L.polygon([<?php foreach($cords as $crds) { echo "[".floatval($crds[1]).",".floatval($crds[0])."]"; if ($last[1] != $crds[1]) { echo ","; } }?>],
+        L.polygon([<?php foreach($cords as $crds) { echo esc_js("[".floatval($crds[1]).",".floatval($crds[0])."]"); if ($last[1] != $crds[1]) { echo esc_js(","); } }?>],
             {
-                fillOpacity: <?php if (isset($fill_opacity)) { echo $fill_opacity; }else { echo 0.3; } ?>,
-                color: '<?php if (isset($color)) { echo $color; }else { echo '#800026'; } ?>'
+                fillOpacity: <?php if (isset($fill_opacity)) { echo esc_js($fill_opacity); }else { echo esc_js(0.3); } ?>,
+                color: '<?php if (isset($color)) { echo esc_js($color); }else { echo esc_js('#800026'); } ?>'
             })
             .addTo(map)
-            .bindPopup("<?php foreach($col_names as $col_name){ if ($col_name != "Polygon") { echo $col_name.":".str_replace("\r", '', $row[$col_name])."<br>"; } }?>");
+            .bindPopup("<?php foreach($col_names as $col_name){ if ($col_name != "Polygon") { echo esc_js($col_name.":".str_replace("\r", '', $row[$col_name])."<br>"); } }?>");
         <?php
         unset($cords);
         unset($first);
         unset($last);
         unset ($i);
-    }else{ echo "not available type";}
+    }//else{ echo "not available type";}
 }
         ?>
     </script>
@@ -237,8 +235,10 @@ $last = end($cords);
 function getcoord($address)
 {
     $prepAddr = str_replace(' ', '+', $address);
-    $geocode = file_get_contents('http://maps.google.com/maps/api/geocode/json?address=' . $prepAddr . '&sensor=false');
-    $output = json_decode($geocode);
+    $url = 'http://maps.google.com/maps/api/geocode/json?address=' . $prepAddr . '&sensor=false';
+    $response = wp_remote_get($url);
+    $body = wp_remote_retrieve_body( $response );
+    $output = json_decode($body);
     $latitude = $output->results[0]->geometry->location->lat;
     $longitude = $output->results[0]->geometry->location->lng;
     $coords['latitude'] = $latitude;
