@@ -10,120 +10,132 @@ function mv_create_file_page()
 {
     $fixed_headers = $fixed_header_types = $Header_Names = $Header_types = $data =  [];
     $Header_Num = $Rows_Num = "";
-    $err_Header = $err_Rows = $err_Types = $err_data = $err_data_match = $err_filename = $result = "";
+    $err_Header = $err_Rows = $err_Types = $err_data = $err_data_match = $err_filename = $result = $validationerror = "";
     if (isset($_POST["Step"]))
     {
         // Two step form
         if ($_POST["Step"] == "Next")
         {
-            //Validation
-            if (intval($_POST['Headers_num']) == 0 or empty($_POST['Headers_num'])) {
-                $err_Header = "Number of Headers must be at least 1";
-                unset($_POST["Step"]);
-            }
-
-            if (empty($_POST['Rows_num']) || !is_numeric($_POST['Rows_num'])) {
-                $err_Rows = 'Number of Rows must be at least 1';
-                unset($_POST["Step"]);
-            }
-            $Header_Num = intval($_POST['Headers_num']);
-            $Rows_Num = intval($_POST['Rows_num']);
-            $Data_Input = $_POST['Data_Input'];
-            switch ($Data_Input)
+            if (isset($_POST['createcsv_nonce1']) && wp_verify_nonce($_POST['createcsv_nonce1'], 'create_csv1') && current_user_can('publish_posts'))
             {
-                case "Lat_Long":
-                    $fixed_headers[0] = "Latitude";
-                    $fixed_headers[1] = "Longitude";
-                    $fixed_header_types[0] = "FLOAT";
-                    $fixed_header_types[1] = "FLOAT";
-                    break;
-                case "Address":
-                    $fixed_headers[0] = "Address";
-                    $fixed_header_types[0] = "TEXT";
-                    break;
-                case "Polygon":
-                    $fixed_headers[0] = "Polygon";
-                    $fixed_header_types[0] = "FLOAT";
-                    break;
+            //Validation
+                if (intval($_POST['Headers_num']) == 0 or empty($_POST['Headers_num'])) {
+                    $err_Header = "Number of Headers must be at least 1";
+                    unset($_POST["Step"]);
+                }
+
+                if (empty($_POST['Rows_num']) || !is_numeric($_POST['Rows_num'])) {
+                    $err_Rows = 'Number of Rows must be at least 1';
+                    unset($_POST["Step"]);
+                }
+                $Header_Num = intval($_POST['Headers_num']);
+                $Rows_Num = intval($_POST['Rows_num']);
+                $Data_Input = $_POST['Data_Input'];
+                switch ($Data_Input)
+                {
+                    case "Lat_Long":
+                        $fixed_headers[0] = "Latitude";
+                        $fixed_headers[1] = "Longitude";
+                        $fixed_header_types[0] = "FLOAT";
+                        $fixed_header_types[1] = "FLOAT";
+                        break;
+                    case "Address":
+                        $fixed_headers[0] = "Address";
+                        $fixed_header_types[0] = "TEXT";
+                        break;
+                    case "Polygon":
+                        $fixed_headers[0] = "Polygon";
+                        $fixed_header_types[0] = "FLOAT";
+                        break;
+                }
+            }else
+            {
+                $validationerror = "You are not authorized to do that";
             }
         }
-        if ($_POST["Step"] == "Import")
+        if ($_POST["Step"] == "Create")
         {
-            $Header_Names = $_POST['headers'];
-            $Header_types = $_POST['types'];
-            $fixed_headers = $_POST['fixed_headers'];
-            $fixed_header_types = $_POST['fixed_types'];
-            $total_header_names = array_merge($fixed_headers,$Header_Names);
-            $total_header_types = array_merge($fixed_header_types,$Header_types);
-            $data = $_POST['data'];
-            $Header_Num = sizeof($Header_Names);
-            $Rows_Num = sizeof($data)/sizeof($total_header_names);
-            //Validation
-            //Checking if fields are empty
-            if (in_array('', $total_header_names, TRUE)) {
-                $_POST["Step"] = "Next";
-                $err_Header =  'Please fill out all Header Names';
-            }
-            if (in_array('', $total_header_types, TRUE)) {
-                $_POST["Step"] = "Next";
-                $err_Types =  'Please fill out all Data Types';
-            }
-            if (in_array('', $data, TRUE)) {
-                $_POST["Step"] = "Next";
-                $err_data =  'Please fill out all Data';
-            }
-            if (!empty($_POST['table_name']))
+            if (isset($_POST['createcsv_nonce2']) && wp_verify_nonce($_POST['createcsv_nonce2'], 'create_csv2') && current_user_can('publish_posts'))
             {
-                $file_name = sanitize_text_field($_POST['table_name']);
-            }
-            else
-            {
-                $err_filename = "Enter a Name for your file!";
-            }
-            //Checking if data matches with their type
-            $i = 0;
-            $data_size = sizeof($data) - 1;
-            do {
-                foreach ($total_header_types as $headertype) {
-                    $type = check_type($data[$i]);
-                    //Checking if data entered agree to their data type
-                    if ($type != $headertype) {
-                        $_POST["Step"] = "Next";
-                        $err_data_match = "Data don't match with their type!";
-                        break 2;
-                    }
-                    $i++;
-                    //Sanitizing data
-                    if ($type == "TEXT")
-                    {
-                        $data[$i] = sanitize_text_field($data[$i]);
-                    }
-                }
-            } while ($i <= $data_size);
-            //Sanitizing Header Names and Types
-            for($i=0; $i<sizeof($Header_Names); $i++)
-            {
-                $Header_Names[$i] = sanitize_text_field($Header_Names[$i]);
-                $Header_types[$i] = sanitize_text_field($Header_types[$i]);
-                //Checking if type is either TEXT, FLOAT or INT
-                if ($Header_types[$i] != 'TEXT' and $Header_types[$i] != 'INT' and $Header_types[$i] != 'FLOAT') {
+                $Header_Names = $_POST['headers'];
+                $Header_types = $_POST['types'];
+                $fixed_headers = $_POST['fixed_headers'];
+                $fixed_header_types = $_POST['fixed_types'];
+                $total_header_names = array_merge($fixed_headers,$Header_Names);
+                $total_header_types = array_merge($fixed_header_types,$Header_types);
+                $data = $_POST['data'];
+                $Header_Num = sizeof($Header_Names);
+                $Rows_Num = sizeof($data)/sizeof($total_header_names);
+                //Validation
+                //Checking if fields are empty
+                if (in_array('', $total_header_names, TRUE)) {
                     $_POST["Step"] = "Next";
-                    $err_Types = 'Please insert one of the available Data Types';
-                    break;
+                    $err_Header =  'Please fill out all Header Names';
                 }
-            }
-            if (($err_data =="") && ($err_Types =="") && ($err_Header =="") && ($err_data_match =="") && ($err_filename ==""))
-            {
-                $result = import_to_db($file_name, $total_header_names,$total_header_types, $data);
-                if($result == "")
+                if (in_array('', $total_header_types, TRUE)) {
+                    $_POST["Step"] = "Next";
+                    $err_Types =  'Please fill out all Data Types';
+                }
+                if (in_array('', $data, TRUE)) {
+                    $_POST["Step"] = "Next";
+                    $err_data =  'Please fill out all Data';
+                }
+                if (!empty($_POST['table_name']))
                 {
-                    $Header_Num = $Rows_Num = "";
-                    unset($_POST["Step"]);
+                    $file_name = sanitize_text_field($_POST['table_name']);
                 }
                 else
                 {
-                    $_POST["Step"] = "Next";
+                    $err_filename = "Enter a Name for your file!";
                 }
+                //Checking if data matches with their type
+                $i = 0;
+                $data_size = sizeof($data) - 1;
+                do {
+                    foreach ($total_header_types as $headertype) {
+                        $type = check_type($data[$i]);
+                        //Checking if data entered agree to their data type
+                        if ($type != $headertype) {
+                            $_POST["Step"] = "Next";
+                            $err_data_match = "Data don't match with their type!";
+                            break 2;
+                        }
+                        $i++;
+                        //Sanitizing data
+                        if ($type == "TEXT")
+                        {
+                            $data[$i] = sanitize_text_field($data[$i]);
+                        }
+                    }
+                } while ($i <= $data_size);
+                //Sanitizing Header Names and Types
+                for($i=0; $i<sizeof($Header_Names); $i++)
+                {
+                    $Header_Names[$i] = sanitize_text_field($Header_Names[$i]);
+                    $Header_types[$i] = sanitize_text_field($Header_types[$i]);
+                    //Checking if type is either TEXT, FLOAT or INT
+                    if ($Header_types[$i] != 'TEXT' and $Header_types[$i] != 'INT' and $Header_types[$i] != 'FLOAT') {
+                        $_POST["Step"] = "Next";
+                        $err_Types = 'Please insert one of the available Data Types';
+                        break;
+                    }
+                }
+                if (($err_data =="") && ($err_Types =="") && ($err_Header =="") && ($err_data_match =="") && ($err_filename ==""))
+                {
+                    $result = import_to_db($file_name, $total_header_names,$total_header_types, $data);
+                    if($result == "")
+                    {
+                        $Header_Num = $Rows_Num = "";
+                        unset($_POST["Step"]);
+                    }
+                    else
+                    {
+                        $_POST["Step"] = "Next";
+                    }
+                }
+            }else
+            {
+                $validationerror = "You are not authorized to do that";
             }
         }
     }
@@ -167,6 +179,7 @@ function mv_create_file_page()
         </label>
         <br>
         <input type="submit" name="Step" value="Next" width="5">
+        <?php wp_nonce_field('create_csv1','createcsv_nonce1'); ?>
     </form>
     <?php
     } elseif ($_POST["Step"] == "Next")
@@ -238,7 +251,8 @@ function mv_create_file_page()
       <br>
       <label> File Name (without .csv extension): <input type="text" name="table_name" </label>
       <br>
-      <input type="submit" name="Step" value="Import" width="10">
+      <input type="submit" name="Step" value="Create" width="10">
+      <?php wp_nonce_field('create_csv2','createcsv_nonce2'); ?>
     </form>
     <br>
     <span class="error"><?php echo esc_html($err_Header); ?></span> <br>
@@ -247,6 +261,7 @@ function mv_create_file_page()
     <span class="error"><?php echo esc_html($err_data_match); ?></span> <br>
     <span class="error"><?php echo esc_html($err_filename); ?></span> <br>
     <span class="error"><?php echo esc_html($result); ?></span>
+    <span><?php echo esc_html($validationerror); ?></span>
     <?php
     }
 }
