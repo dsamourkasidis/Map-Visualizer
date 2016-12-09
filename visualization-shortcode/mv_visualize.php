@@ -42,22 +42,20 @@ function mv_visualize($atts)
     $sql2 = "SELECT * FROM $table_name";
     $result2 = $wpdb->get_results($sql2, ARRAY_A);
     ?>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet'/>
+
     <div id='map'></div>
     <style> #map {
             height: 500px;
+            position: inherit;
         }
     </style>
     <script>
-        L.mapbox.accessToken = 'pk.eyJ1IjoiZHNhbSIsImEiOiJrTGdOSjhVIn0.zlpcBqn7P2TQyzQVNBCU7w';
+        var accessToken = 'pk.eyJ1IjoiZHNhbSIsImEiOiJrTGdOSjhVIn0.zlpcBqn7P2TQyzQVNBCU7w';
         var map = L.map('map');
-        var mapboxTiles1 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.llp7bo02/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
+        var mapboxTiles1 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.llp7bo02/{z}/{x}/{y}.png?access_token=' + accessToken, {
             attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
         });
-        var mapboxTiles2 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.m3en6deb/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
+        var mapboxTiles2 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.m3en6deb/{z}/{x}/{y}.png?access_token=' + accessToken, {
             attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
         });
         var file_name = "<?php echo esc_js($a['file_name']); ?>";

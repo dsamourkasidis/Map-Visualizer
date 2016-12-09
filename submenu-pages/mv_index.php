@@ -8,10 +8,6 @@
 function mv_index_page()
 {
     ?>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet'/>
     <h1>Visualization Plugin</h1>
     <div id="maps">
         <div id="map"></div>
@@ -31,18 +27,18 @@ function mv_index_page()
     </style>
     <script>
         //Sample maps for index page
-        L.mapbox.accessToken = 'pk.eyJ1IjoiZHNhbSIsImEiOiJrTGdOSjhVIn0.zlpcBqn7P2TQyzQVNBCU7w';
+        var mapbox_accessToken = 'pk.eyJ1IjoiZHNhbSIsImEiOiJrTGdOSjhVIn0.zlpcBqn7P2TQyzQVNBCU7w';
         // Replace 'examples.map-i87786ca' with your map id.
-        var mapboxTiles = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.llp7bo02/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
+        var mapboxTiles = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.llp7bo02/{z}/{x}/{y}.png?access_token=' + mapbox_accessToken, {
             attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
         });
         var map = L.map('map')
             .addLayer(mapboxTiles)
             .setView([42.3610, -71.0587], 1);
 
-        L.mapbox.accessToken = 'pk.eyJ1IjoiZHNhbSIsImEiOiJrTGdOSjhVIn0.zlpcBqn7P2TQyzQVNBCU7w';
+        // L.mapbox.accessToken = 'pk.eyJ1IjoiZHNhbSIsImEiOiJrTGdOSjhVIn0.zlpcBqn7P2TQyzQVNBCU7w';
         // Replace 'examples.map-i87786ca' with your map id.
-        var mapboxTiles2 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.m3en6deb/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
+        var mapboxTiles2 = L.tileLayer('https://{s}.tiles.mapbox.com/v4/dsam.m3en6deb/{z}/{x}/{y}.png?access_token=' + mapbox_accessToken, {
             attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
         });
         var map2 = L.map('map2')
@@ -58,7 +54,7 @@ function mv_index_page()
             color: '#800026'
         }).addTo(map);
         circle.bindPopup("I am a circle.");
-        var polyg = L.multiPolygon([[[41.902783, 12.496366], [40.416775, -3.703790], [52.520007, 13.404954]],[[-53.494339, 5.572342],[-53.483612, 5.568055],[-53.40834, 5.548888]]]).addTo(map);
+        var polyg = L.polygon([[[41.902783, 12.496366], [40.416775, -3.703790], [52.520007, 13.404954]],[[-53.494339, 5.572342],[-53.483612, 5.568055],[-53.40834, 5.548888]]]).addTo(map);
 
         var marker2 = L.marker([51.5, -0.09]).addTo(map2)
             .bindPopup("I am a marker.");

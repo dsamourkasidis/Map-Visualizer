@@ -11,7 +11,14 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 //Hook up to the init action
 add_action( 'init', 'mv_init' ) ;
-
+function mv_scripts() {
+    wp_enqueue_script( 'mv_mapboxjs', plugins_url( 'Scripts/mapbox.js', __FILE__ ), array());
+    wp_enqueue_script( 'mv_leafletjs', plugins_url( 'Scripts/leaflet.js', __FILE__ ), array());
+    wp_enqueue_style( 'mv_leafletcss', plugins_url( 'Scripts/leaflet.css', __FILE__ ), false);
+    wp_enqueue_style( 'mv_mapboxcss', plugins_url( 'Scripts/mapbox.css', __FILE__ ), false);
+}
+add_action( 'admin_enqueue_scripts', 'mv_scripts' );
+add_action('wp_enqueue_scripts', 'mv_scripts');
 
 function mv_init(){
 
