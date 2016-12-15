@@ -47,7 +47,7 @@ function mv_import_csv_page()
             border: 3px double #aaaaaa;
             -moz-border-left-colors: #aaaaaa #ffffff #aaaaaa;
             -moz-border-right-colors: #aaaaaa #ffffff #aaaaaa;
-            -moz-border-top-colors: #aaaaaa #ffffff #aaaaa;a;
+            -moz-border-top-colors: #aaaaaa #ffffff #aaaaaa;
             -moz-border-bottom-colors: #aaaaaa #ffffff #aaaaaa
             width: 250px;
         }
@@ -59,15 +59,29 @@ function mv_import_csv_page()
     <body bgcolor="#f2f2f2">
     <h2 align="left">Import CSV File</h2>
     <h4> Your CSV file must apply to the following rules:</h4>
-    <p> <b>1)</b> The first row must contain the Header Names.<br>
-        <b>2)</b> The second row must contain the data type for each Header. Available data types are "INT", "TEXT" and "FLOAT".<br>
-        <b>3)</b> The first Header Names should be "Latitude" and "Longitude" of type "FLOAT". Alternatively, you can have one named "Address",
-            of type "TEXT", containing the desired address according to the national post service of each country.
-            Please notice that a combination of the two options is not supported.<br>
-        <b>4)</b> If you wish to use polygons for visualization a single Header named "Polygon", of type "TEXT", will be used in the form of
-        <a href="https://en.wikipedia.org/wiki/Well-known_text" target="_blank">"Well-known text"</a>.
-        <br> Sample CSV Files can be found in the plugin's directory
-    </p>
+<ul style="list-style:disc ">
+    <li>The first row must contain all the Header names:
+        <ol>
+          <li>If you use geographical coordinates, the headers of *the first two column*
+              must be named "Latitude" and "Longitude" respectively.
+          </li>
+          <li>If you use addresses, the *first column* must be named "Address"
+            and the plugin will geocode the data accordingly.
+          </li>
+            <li>If you wish to use polygons, the *first column* must be named "Polygon".
+            Format of polygon data should be of <a href="https://en.wikipedia.org/wiki/Well-known_text" target="_blank">"Well-known text"</a>.
+            </li>
+        </ol>
+    </li>
+    <li> The second row must contain the data type of each column:
+        <ol>
+            <li>Available data types include "INT", "FLOAT" and "TEXT".</li>
+            <li>For "Latitude" and "Longitude" headers, the data type to be used is "FLOAT".</li>
+            <li>For "Polygon" or "Address" headers, the data type to be used is "TEXT".</li>
+        </ol>
+    </li>
+    <li> Sample CSV Files can be found in the plugin's directory</li>
+</ul>
     <form method="post" enctype="multipart/form-data">
        <input type="file" name="file_source" id="file_source" class="inputfile " >
         <br>

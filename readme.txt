@@ -1,20 +1,20 @@
 === Map Visualizer ===
 Contributors: dsamourkasidis,
 Donate link:
-Tags: csv, netcdf, map, visualization, geocode, leaflet
+Tags: csv, map, visualization, geocode, leaflet
 Requires at least: 4.1.5
 Tested up to: 4.3.1
 Stable tag:
 License: GPL 3.0
 License URI: https://www.gnu.org/licenses/gpl.html
 
-Import your data from csv or netcdf files and visualise them on Google streets/satellite maps
+Import your data from csv files and visualise them on Google streets/satellite maps
 
 == Description ==
 
-Map Visualizer allows users to import csv and netcdf files, and  to create a map out of them using the plugin's interface. 
+Map Visualizer allows users to import csv files, and  to create a map out of them using the plugin's interface.
 After you have successfully imported (or created) a data source, you can visualise it on a map and add it to your posts/pages with a shortcode. 
-All shortcodes can be constructed easily through the plugin's inteface.
+All shortcodes can be constructed easily through the plugin's interface.
 
 = CSV File Format =
 
@@ -29,23 +29,6 @@ In order for the CSV file to be imported successfully, its format must comply wi
   * Available data types include "INT", "FLOAT" and "TEXT".
   * For "Latitude" and "Longitude" headers, the data type to be used is "FLOAT".
   * For "Polygon" or "Address" headers, the data type to be used is "TEXT".
-  
-= netCDF File Format =
-
-* The plugin currently supports only 2-dimensional netCDF file formats. 
-* Only geographical coordinates are supported for netCDF files, so the two dimensions must be named "Latitude" and "Longitude" of "float" type.
-* The available data type for all the variables are again either "INT", "FLOAT" or "TEXT".
-
-* Issues with uploading netCDF files on you WordPress installation
-    * Please make sure you have the latest Java installed on your machine
-	* .nc Extension:
-        Wordpress does not allow the upload of unregistered file types due to security reasons. This means, you should add
-        the .nc extension to the list of permitted extensions by following the instructions linked here:
-        http://www.wpbeginner.com/wp-tutorials/how-to-add-additional-file-types-to-be-uploaded-in-wordpress
-	* File Size:
-        Wordpress has a limit for the maximum file size that can be uploaded, depending on the web hosting company you choose and the package you select.
-        You can view it on the "Media Uploader" page and can increase it, if necessary, following the instructions linked here:
-        http://www.wpbeginner.com/wp-tutorials/how-to-increase-the-maximum-file-upload-size-in-wordpress/
 
 = shortcode format =
 
@@ -65,7 +48,7 @@ The general format of this plugin's shortcodes is [visualise]. Available attribu
 == Installation ==
 1. Upload the content of the ZIP archive to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Import your file through the 'Import netcdf File' or 'Import CSV File' pages. Alternatively create your own through the 'Create New File' page.
+3. Import your file through the Import CSV File' page. Alternatively create your own through the 'Create New File' page.
 4. View your stored files, construct and copy a shortcode through the 'List All Files' page.
 5. Paste the shortcode in the text where you want the map visualization to appear
 

@@ -45,8 +45,10 @@ function mv_visualize($atts)
 
     <div id='map'></div>
     <style> #map {
-            height: 500px;
+            height: 400px;
+            width: 500px;
             position: inherit;
+            z-index: 0;
         }
     </style>
     <script>

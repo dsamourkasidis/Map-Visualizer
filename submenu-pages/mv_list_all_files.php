@@ -14,17 +14,20 @@ function mv_list_all_files()
     $myfile = fopen(dirname(__FILE__) . "/Imported_files.txt", "r") or die("Unable to open file!");
     if (isset($_POST["delete"]) && "" != $_POST["delete"])     //delete button is submitted
     {
-        global $wpdb;                 //your database
-        foreach ($_POST['select'] as $selected) {    //Find selected checkboxes
+        if (isset($_POST['delete_csv_nonce']) && wp_verify_nonce($_POST['delete_csv_nonce'], 'delete_csv')
+            && current_user_can('publish_posts')) {
+            global $wpdb;                 //your database
+            foreach ($_POST['select'] as $selected) {    //Find selected checkboxes
 //Delete csv from Imported_files.txt
-            $contents = file_get_contents(dirname(__FILE__) . "/Imported_files.txt");
-            $contents = str_replace($selected, '', $contents);
-            file_put_contents(dirname(__FILE__) . "/Imported_files.txt", $contents);
+                $contents = file_get_contents(dirname(__FILE__) . "/Imported_files.txt");
+                $contents = str_replace($selected, '', $contents);
+                file_put_contents(dirname(__FILE__) . "/Imported_files.txt", $contents);
 //Delete csv from db
-            $string = str_replace("\r\n", '', $selected);
-            $sql = "DROP TABLE $string";
-            $wpdb->query($sql);
-            echo "<p>" . $selected . "</p>";
+                $string = str_replace("\r\n", '', $selected);
+                $sql = "DROP TABLE $string";
+                $wpdb->query($sql);
+                //echo "<p>" . $selected . "</p>";
+            }
         }
     }elseif ( "" != $_POST["copy"]) {
 
@@ -38,7 +41,9 @@ function mv_list_all_files()
         $fill_opacity = $_POST['fill_opacity'][key($_POST['copy'])];
         $center_point = $_POST['center_point'][key($_POST['copy'])];
         $zoom = $_POST['zoom'][key($_POST['copy'])];
-        $text = $name." map=\"".$map."\" type=\"".$type."\" marker_type=\"".$marker_type."\" category=\"".$category."\" colorant=\"".$colorant."\" circle_radius=".$circle_radius." fill_opacity=".$fill_opacity." center_point=".$center_point." zoom=".$zoom."]";
+        $text = $name." map=\"".$map."\" type=\"".$type."\" marker_type=\"".$marker_type."\" category=\"".$category
+            ."\" colorant=\"".$colorant."\" circle_radius=".$circle_radius." fill_opacity=".$fill_opacity
+            ." center_point=".$center_point." zoom=".$zoom."]";
         ?>
         <script>
             window.prompt("Copy shortcode: Ctrl+C, Enter", '<?php echo $text;?>');
@@ -63,41 +68,50 @@ function mv_list_all_files()
         }
     </style>
     <h2>List of all stored files</h2>
-    <h4> Here, you can view all the files you have created or imported and are stored in your wordpress database.
-       <br> Next to their name, the shortcode required to visualize each of them is displayed.
-        <br>Furthermore, you can either choose to delete them or export them as CSV files.</h4>
-    <p>Inside the shortcode you can view all of the available options you can enter.
-        <br>
-        In <b>map</b> you can enter one of the two available map types to be used for the visualisation. The two map types you can choose
-        from are "Satellite" and "Streets". The default map type which will be used is Streets.
-        <br>
-        In <b>type</b> you can choose the form in which your set of coordinates will appear in the map. They can either appear as markers
-        or as polygons. Notice that if you choose polygon type, data must be entered in the form of Well-known text.
-        In <b>marker_type</b> type you can choose between two available markers to be pinned on the chosen map. The two available markers
-        are "simple marker" and "circle marker". The default markers are simple markers.
-        <br>
+    <h4> Here, you can view all the files you have created or imported. You can construct shortcodes, delete or export them as CSV.
+    <br>Inside the shortcode you can view all of the available options you can enter.
+    </h4>
+        <ol>
+            <li>
+        In <b>map</b> you can choose between Google "Satellite" or "Streets" maps to visualize your data on.
+                The default map type which will be used is Streets.
+            </li>
+            <li>
+        In <b>type</b> you can choose the form in which your set of coordinates will appear in the map.
+        They can either appear as markers or as polygons.
+            </li>
+            <li>
+        In <b>marker_type</b> type you can choose between "simple marker" and "circle marker" to be pinned on the chosen map.
+        The default markers are simple markers.
+            </li>
+            <li>
         In <b>category</b> you can enter one of your CSV Headers, which will be used to differentiate your data depending on
         the marker type you chose. If circle marker is chosen, different colors will be used to represent them, depending
         on each value. If simple marker is chosen, then the CSV Header you enter will be the only one displayed in the
         popup box. If you do not wish to enter one, then circle markers will have the same color and simple markers will
         display all of the Headers in the popup box.
-        <br>
+            </li>
+            <li>
         In <b>colorant</b> you can choose the color, which will be used to differentiate the data of the category inserted above.
         It is possible to either stick to the default colors, or choose temperature colors.
-        <br>
-        In <b>circle_radius</b> you are able to insert a desired radius for the circle markers. The default value is 5, and it is advised
-        to stay between a 1-10 scale.
-        <br>
-        In <b>fill_opacity</b>, the level of opacity in circle markers and polygons is determined. The default value is 0.3, and it is advised
-        to stay between a 0.1-1 scale.
-        <br>
-        In <b>center_point</b>, you can enter an Address,which will be the initial geographical center of the map. If no Address is inserted
-        the first Address in your file will be used as a center point.
-        <br>
+            </li>
+            <li>
+        In <b>circle_radius</b> you are able to insert a desired radius for the circle markers. The default value is 5, and it is
+        advised to stay between a 1-10 scale.
+            </li>
+            <li>
+        In <b>fill_opacity</b>, the level of opacity in circle markers and polygons is determined. The default value is 0.3, and it
+        is advised to stay between a 0.1-1 scale.
+            </li>
+            <li>
+        In <b>center_point</b>, you can enter an Address,which will be the initial geographical center of the map. If no Address is
+        inserted, then the first Address in your file will be used as a center point.
+            </li>
+            <li>
         In <b>zoom</b>, you can set the initial map zoom. Value 1 shows the entire world map and the default zoom used is 3.
-        <br>
+            </li>
+        </ol>
 
-       </p>
     <form id="frm1" method="post" enctype="multipart/form-data">
         <table id="tb1" cellspacing="0" style="width:auto; background-color: inherit";>
             <thead>
@@ -129,7 +143,7 @@ function mv_list_all_files()
                         ?>
                     </td>
                     <td>
-                        <input type="text" name="name[]" value='[visualize file_name="<?php echo esc_html(str_replace("\r\n", '', $name)); ?>"'  >
+                        <input size="30" type="text" name="name[]" value='[visualize file_name="<?php echo esc_html(str_replace("\r\n", '', $name)); ?>"'>
                         <select name="map[]">
                             <option value="Streets">map = "Streets"</option>
                             <option value="Satellite">map = "Satellite"</option>
@@ -142,9 +156,7 @@ function mv_list_all_files()
                             <option value="simple marker">marker_type = "simple marker"</option>
                             <option value="circle marker">marker_type = "circle marker"</option>
                         </select>
-                        <select name="category[]">
-                            <option value=" ">category = " "</option>
-                        </select>
+                        <input type="text" name="name[]" value='category = ""'  >
                         <select name="colorant[]">
                             <option value="default">colorant = "default"</option>
                             <option value="temp">colorant = "temp"</option>
@@ -162,10 +174,16 @@ function mv_list_all_files()
             }
             ?>
             <tr>
-                <td><input type="submit" value="Delete" name="delete" id="delete"</td>
+                <td>
+                    <input type="submit" value="Delete" name="delete" id="delete">
+                    <?php wp_nonce_field('delete_csv','delete_csv_nonce'); ?>
+                </td>
             </tr>
             <tr>
-                <td><input type="submit" value="Export As CSV" name="export" id="export"</td>
+                <td>
+                    <input type="submit" value="Export As CSV" name="export" id="export">
+                    <?php wp_nonce_field('export_csv','export_csv_nonce'); ?>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -248,10 +266,14 @@ function checkexport()
 {
     if (isset($_POST["export"]) && "" != $_POST["export"])     //export button is submitted
     {
-        foreach ($_POST['select'] as $selected) {
-            $string = str_replace("\r\n", '', $selected);
-            $table = $string; // this is the tablename that you want to export to csv from mysql.
-            exportMysqlToCsv($table);
+        if (isset($_POST['delete_csv_nonce']) && wp_verify_nonce($_POST['delete_csv_nonce'], 'delete_csv')
+            && current_user_can('publish_posts'))
+        {
+            foreach ($_POST['select'] as $selected) {
+                $string = str_replace("\r\n", '', $selected);
+                $table = $string; // this is the tablename that you want to export to csv from mysql.
+                exportMysqlToCsv($table);
+            }
         }
     }
 }
