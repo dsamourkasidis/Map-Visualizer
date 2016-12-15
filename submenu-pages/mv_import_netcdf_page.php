@@ -25,6 +25,20 @@ function mv_import_netcdf_page(){
 	<?php wp_nonce_field( 'netcdf', 'netcdf_nonce' ); ?>
 <input id="submit_netcdf" name="submit_netcdf" type="submit" value="Upload" />
 </form>
+        <?php if (
+        isset( $_POST['netcdf_nonce'], $_POST['post_id'] )
+        && wp_verify_nonce( $_POST['netcdf_nonce'], 'netcdf' )
+        && current_user_can( 'publish_posts', $_POST['post_id'] )
+    ) {
+        ?> <p>
+            <object codetype="application/java" classid="java:Netcdf_to_csv.class"
+                    archive="<?php echo esc_attr(plugin_dir_path(__FILE__) .'\netcdf-java\netcdf_to_csv.jar '); ?>" width="740" height="400">
+             <param name="jarpath" value="<?php echo esc_attr(plugin_dir_path(__FILE__) .'\netcdf-java\netcdf_to_csv.jar '); ?>">
+             <param name="ncpath" value="<?php echo esc_attr(wp_upload_dir()['path'].' '.$_FILES['netcdf']['name']); ?>">
+            </object>
+        </p>
+        <?php }
+    ?>
     </div>
     <div>
         <h4>Issues with Wordpress</h4>
@@ -46,7 +60,7 @@ function mv_import_netcdf_page(){
     if (
         isset( $_POST['netcdf_nonce'], $_POST['post_id'] )
         && wp_verify_nonce( $_POST['netcdf_nonce'], 'netcdf' )
-        && current_user_can( 'edit_post', $_POST['post_id'] )
+        && current_user_can( 'publish_posts', $_POST['post_id'] )
     ) {
         // The nonce was valid and the user has the capabilities, it is safe to continue.
 
@@ -59,12 +73,13 @@ function mv_import_netcdf_page(){
         $attachment_id = media_handle_upload( 'netcdf', $_POST['post_id'] );
         $upload_dir = wp_upload_dir();
         $jav = 'java -jar '.plugin_dir_path(__FILE__) .'\netcdf-java\netcdf_to_csv.jar '.$upload_dir['path'].' '.$_FILES['netcdf']['name'].' 2>&1';
-        exec($jav,$output);
-//        echo "Java messages: ".$output[0];
+
+      //  exec($jav,$output);
+    //   echo "Java messages: ".$output[0];
         include "CSV-import/Quick-CSV-import.php";
         $csv = new Quick_CSV_import();
         $created_csv = str_replace('.nc','.csv',$_FILES['netcdf']['name']);
-        $csv->file_name = $output[0];
+    //    $csv->file_name = $output[0];
         $csv->table_name = str_replace('.','_',$created_csv);
         $csv->import();
         if (empty($csv->error)) {
