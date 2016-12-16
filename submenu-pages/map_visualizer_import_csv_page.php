@@ -6,12 +6,12 @@
  * Time: 9:21 PM
  */
 
-function mv_import_csv_page()
+function map_visualizer_import_csv_page()
 {
-    include "CSV-import/Quick-CSV-import.php"; // Have you class seperate from your working code.
+    include "CSV-import/map_visualizer_Quick-CSV-import.php"; // Have you class seperate from your working code.
     $validationerror = "";
     $import_result ="";
-    $csv = new Quick_CSV_import();
+    $csv = new map_visualizer_Quick_CSV_import();
     if (isset($_POST["Go"]) && "" != $_POST["Go"]) //form was submitted
     {
         if (isset($_POST['importcsv_nonce']) && wp_verify_nonce($_POST['importcsv_nonce'], 'import_csv') && current_user_can('publish_posts'))
@@ -19,12 +19,12 @@ function mv_import_csv_page()
             if ($_POST["Go"] == "Import it") {
                 $csv->file_name = $_FILES['file_source']['tmp_name'];
                 //start import now
-                $csv->import();
+                $csv->map_visualizer_import();
                 if (empty($csv->error)) {
                     //Store file name in Imported_files.txt
-                    $contents = file_get_contents(dirname(__FILE__) . "/Imported_files.txt");
+                    $contents = file_get_contents(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt");
                     if (strpos($contents, $csv->table_name . "\r\n") === false) {
-                        $myfile = fopen(dirname(__FILE__) . "/Imported_files.txt", "a") or die("Unable to open file!");
+                        $myfile = fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "a") or die("Unable to open file!");
                         $txt = $csv->table_name . "\r\n";
                         fwrite($myfile, $txt);
                         fclose($myfile);

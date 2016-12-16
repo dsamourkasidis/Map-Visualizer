@@ -6,7 +6,7 @@
  * Date: 4/8/2015
  * Time: 1:03 PM
  */
-class Quick_CSV_import
+class map_visualizer_Quick_CSV_import
 {
     var $table_name; //where to import to
     var $file_name;  //where to import from
@@ -21,7 +21,7 @@ class Quick_CSV_import
     var $table_exists; //flag: does table for import exist
 
 
-    function Quick_CSV_import($file_name = "")
+    function map_visualizer_Quick_CSV_import($file_name = "")
     {
         $this->file_name = $file_name;
         $this->arr_csv_columns = array();
@@ -36,16 +36,16 @@ class Quick_CSV_import
     }
 
 
-    function import()
+    function map_visualizer_import()
     {
         global $wpdb;
         if ($this->table_name == "")
             $this->table_name = str_replace('.', '_', $_FILES['file_source']['name']);
             $this->table_exists = false;
-            $this->create_import_table();
+            $this->map_visualizer_create_import_table();
 
         if (empty($this->arr_csv_columns))
-            $this->get_csv_header_fields();
+            $this->map_visualizer_get_csv_header_fields();
 //        if ($this->arr_csv_columns[0] != 'Latitude' or $this->arr_csv_columns[1] != 'Longitude' or $this->arr_csv_columns[0] != 'latitude' or $this->arr_csv_columns[1] != 'longitude')
 //            return $this->error = 'The first two headings of your file should be Latitude and Longitude';
 
@@ -82,7 +82,7 @@ class Quick_CSV_import
 
 
     //returns array of CSV file columns
-    function get_csv_header_fields()
+    function map_visualizer_get_csv_header_fields()
     {
         $this->arr_csv_columns = array();
         $fpointer = fopen($this->file_name, "r");
@@ -128,13 +128,13 @@ class Quick_CSV_import
     }
 
 
-    function create_import_table()
+    function map_visualizer_create_import_table()
     {
         global $wpdb;
         $sql = "CREATE TABLE IF NOT EXISTS " . $this->table_name . " (";
 
         if (empty($this->arr_csv_columns))
-            $this->get_csv_header_fields();
+            $this->map_visualizer_get_csv_header_fields();
 
         if (!empty($this->arr_csv_columns)) {
             $arr = array();

@@ -5,7 +5,7 @@
  * Date: 7/4/2015
  * Time: 1:13 AM
  */
-function mv_index_page()
+function map_visualizer_index_page()
 {
     ?>
     <h1>Map Visualizer</h1>

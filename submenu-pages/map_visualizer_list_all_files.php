@@ -6,12 +6,12 @@
  * Time: 5:08 PM
  *
  */
-add_action('admin_init', 'checkexport');
+add_action('admin_init', 'map_visualizer_checkexport');
 
 
-function mv_list_all_files()
+function map_visualizer_list_all_files()
 {
-    $myfile = fopen(dirname(__FILE__) . "/Imported_files.txt", "r") or die("Unable to open file!");
+    $myfile = fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "r") or die("Unable to open file!");
     if (isset($_POST["delete"]) && "" != $_POST["delete"])     //delete button is submitted
     {
         if (isset($_POST['delete_csv_nonce']) && wp_verify_nonce($_POST['delete_csv_nonce'], 'delete_csv')
@@ -19,9 +19,9 @@ function mv_list_all_files()
             global $wpdb;                 //your database
             foreach ($_POST['select'] as $selected) {    //Find selected checkboxes
 //Delete csv from Imported_files.txt
-                $contents = file_get_contents(dirname(__FILE__) . "/Imported_files.txt");
+                $contents = file_get_contents(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt");
                 $contents = str_replace($selected, '', $contents);
-                file_put_contents(dirname(__FILE__) . "/Imported_files.txt", $contents);
+                file_put_contents(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", $contents);
 //Delete csv from db
                 $string = str_replace("\r\n", '', $selected);
                 $sql = "DROP TABLE $string";
@@ -50,7 +50,7 @@ function mv_list_all_files()
         </script>
 <?php
     }
-    checkexport();
+    map_visualizer_checkexport();
     ?>
 
     <style>
@@ -208,7 +208,7 @@ function mv_list_all_files()
     <?php
     fclose($myfile);
 }
-function exportMysqlToCsv($table)
+function map_visualizer_exportMysqlToCsv($table)
 {
     $csv_terminated = "\n";
     $csv_separator = ",";
@@ -262,7 +262,7 @@ function exportMysqlToCsv($table)
     echo $out;
     exit;
 }
-function checkexport()
+function map_visualizer_checkexport()
 {
     if (isset($_POST["export"]) && "" != $_POST["export"])     //export button is submitted
     {
@@ -272,7 +272,7 @@ function checkexport()
             foreach ($_POST['select'] as $selected) {
                 $string = str_replace("\r\n", '', $selected);
                 $table = $string; // this is the tablename that you want to export to csv from mysql.
-                exportMysqlToCsv($table);
+                map_visualizer_exportMysqlToCsv($table);
             }
         }
     }

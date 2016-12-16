@@ -5,7 +5,7 @@
  * Date: 7/4/2015
  * Time: 1:09 AM
  */
-function mv_visualize($atts)
+function map_visualizer_visualize($atts)
 {
     $a = shortcode_atts(array(
         'file_name' => 'f_name',
@@ -83,7 +83,7 @@ function mv_visualize($atts)
                    //Checking if geocode format is Address or Latitude/Longitude
                    if ($col_names[0] == "Address"){
                         $address = $row[$col_names[0]];
-                        $coords = getcoord($address);
+                        $coords = map_visualizer_getcoord($address);
                         $latitude = $coords['latitude'];
                         $longitude = $coords['longitude'];
                    }else{
@@ -98,7 +98,7 @@ function mv_visualize($atts)
         map.setView(<?php echo esc_js("[".$latitude.",".$longitude."],3"); ?>);
         <?php
                                   }else{
-                                       $cnt_coords = getcoord($center_point);
+                                       $cnt_coords = map_visualizer_getcoord($center_point);
                                        $cnt_latitude = $cnt_coords['latitude'];
                                        $cnt_longitude = $cnt_coords['longitude'];
                                        ?>
@@ -111,7 +111,7 @@ function mv_visualize($atts)
         map.setView(<?php echo esc_js("[".$latitude.",".$longitude."],".$zoom); ?>);
         <?php
                                    }else{
-                                       $cnt_coords = getcoord($center_point);
+                                       $cnt_coords = map_visualizer_getcoord($center_point);
                                        $cnt_latitude = $cnt_coords['latitude'];
                                        $cnt_longitude = $cnt_coords['longitude'];
                                        ?>
@@ -128,7 +128,7 @@ function mv_visualize($atts)
                                   if (array_key_exists($category,$row)){
                                       //Create a scale and retrieve the colour for each value of the inserted category
                                           if ($colorant == 'temp'){
-                                               $color = gettempColor($row[$category]);
+                                               $color = map_visualizer_gettempColor($row[$category]);
                                           }else{
                                                if ($max == NULL or $min == NULL){
                                                   $sql3 = "SELECT MAX($category) AS max_value FROM $table_name";
@@ -137,9 +137,9 @@ function mv_visualize($atts)
                                                   $result4 =  $wpdb->get_results($sql4,ARRAY_A );
                                                   $max = $result3[0]['max_value'];
                                                   $min = $result4[0]['min_value'];
-                                                  $scale = create_values($max,$min);
+                                                  $scale = map_visualizer_create_values($max,$min);
                                                }
-                                              $color = getColor($row[$category],$scale);
+                                              $color = map_visualizer_getColor($row[$category],$scale);
                                           }
                                   }
                                ?>
@@ -173,7 +173,7 @@ function mv_visualize($atts)
 if (array_key_exists($category,$row)){
        //Create a scale and retrieve the colour for each value of the inserted category
            if ($colorant == 'temp'){
-                $color = gettempColor($row[$category]);
+                $color = map_visualizer_gettempColor($row[$category]);
            }else{
                 if ($max == NULL or $min == NULL){
                    $sql3 = "SELECT MAX($category) AS max_value FROM $table_name";
@@ -182,9 +182,9 @@ if (array_key_exists($category,$row)){
                    $result4 =  $wpdb->get_results($sql4,ARRAY_A );
                    $max = $result3[0]['max_value'];
                    $min = $result4[0]['min_value'];
-                   $scale = create_values($max,$min);
+                   $scale = map_visualizer_create_values($max,$min);
                 }
-               $color = getColor($row[$category],$scale);
+               $color = map_visualizer_getColor($row[$category],$scale);
            }
    }
 //Creating Polygons
@@ -232,7 +232,7 @@ $last = end($cords);
 }
 
 //Get the coordinates from Google by Address
-function getcoord($address)
+function map_visualizer_getcoord($address)
 {
     $prepAddr = str_replace(' ', '+', $address);
     $url = 'http://maps.google.com/maps/api/geocode/json?address=' . $prepAddr . '&sensor=false';
@@ -247,7 +247,7 @@ function getcoord($address)
 }
 
 //Returning the colour for a value
-function getColor($d, $scale)
+function map_visualizer_getColor($d, $scale)
 {
     if ($d >= $scale[5]) {
         return '#99000d';
@@ -267,7 +267,7 @@ function getColor($d, $scale)
 }
 
 //Returning Temperature colours
-function gettempColor($t)
+function map_visualizer_gettempColor($t)
 {
     if ($t >= 86.666) {
         return '#FF0DF0';
@@ -321,7 +321,7 @@ function gettempColor($t)
 }
 
 //Creating a scale for colours
-function create_values($max, $min)
+function map_visualizer_create_values($max, $min)
 {
     $arr = array();
     $scale = ($max - $min) / 5;
