@@ -11,22 +11,19 @@ add_action('admin_init', 'map_visualizer_checkexport');
 
 function map_visualizer_list_all_files()
 {
-    $myfile = fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "r") or die("Unable to open file!");
+    global $wpdb; //your database
     if (isset($_POST["delete"]) && "" != $_POST["delete"])     //delete button is submitted
     {
         if (isset($_POST['delete_csv_nonce']) && wp_verify_nonce($_POST['delete_csv_nonce'], 'delete_csv')
-            && current_user_can('publish_posts')) {
-            global $wpdb;                 //your database
+            && current_user_can('publish_posts'))
+        {
             foreach ($_POST['select'] as $selected) {    //Find selected checkboxes
-//Delete csv from Imported_files.txt
-                $contents = file_get_contents(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt");
-                $contents = str_replace($selected, '', $contents);
-                file_put_contents(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", $contents);
+//Delete csv from Imported_files table
+                $wpdb->delete('Imported_files',array('Name' => $selected));
 //Delete csv from db
                 $string = str_replace("\r\n", '', $selected);
                 $sql = "DROP TABLE $string";
                 $wpdb->query($sql);
-                //echo "<p>" . $selected . "</p>";
             }
         }
     }elseif ( "" != $_POST["copy"]) {
@@ -41,8 +38,8 @@ function map_visualizer_list_all_files()
         $fill_opacity = $_POST['fill_opacity'][key($_POST['copy'])];
         $center_point = $_POST['center_point'][key($_POST['copy'])];
         $zoom = $_POST['zoom'][key($_POST['copy'])];
-        $text = $name." map=\"".$map."\" type=\"".$type."\" marker_type=\"".$marker_type."\" category=\"".$category
-            ."\" colorant=\"".$colorant."\" circle_radius=".$circle_radius." fill_opacity=".$fill_opacity
+        $text = $name." map=\"".$map."\" type=\"".$type."\" marker_type=\"".$marker_type."\" ".$category
+            ." colorant=\"".$colorant."\" circle_radius=".$circle_radius." fill_opacity=".$fill_opacity
             ." center_point=".$center_point." zoom=".$zoom."]";
         ?>
         <script>
@@ -129,9 +126,10 @@ function map_visualizer_list_all_files()
             </thead>
             <tbody>
             <?php
-            $i=0;
-            while (!feof($myfile)) {
-                $name = fgets($myfile);
+            $imported = $wpdb->get_col("SELECT Imported_files.Name FROM Imported_files");
+            for($i=0;$i<sizeof($imported);$i++)
+            {
+                $name = $imported[$i];
                 ?>
                 <tr>
                     <td align="center">
@@ -156,7 +154,7 @@ function map_visualizer_list_all_files()
                             <option value="simple marker">marker_type = "simple marker"</option>
                             <option value="circle marker">marker_type = "circle marker"</option>
                         </select>
-                        <input type="text" name="name[]" value='category = ""'  >
+                        <input type="text" name="category[]" value='category = ""'  >
                         <select name="colorant[]">
                             <option value="default">colorant = "default"</option>
                             <option value="temp">colorant = "temp"</option>
@@ -170,7 +168,6 @@ function map_visualizer_list_all_files()
                     </td>
                 </tr>
             <?php
-                $i++;
             }
             ?>
             <tr>
@@ -206,7 +203,6 @@ function map_visualizer_list_all_files()
         }
     </script>
     <?php
-    fclose($myfile);
 }
 function map_visualizer_exportMysqlToCsv($table)
 {

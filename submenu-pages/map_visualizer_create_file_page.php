@@ -72,8 +72,8 @@ function map_visualizer_create_file_page()
                 }
                 for($i=0; $i<sizeof($_POST['fixed_headers']);$i++)
                 {
-                    $fixed_headers = sanitize_text_field($_POST['fixed_headers'][$i]);
-                    $fixed_header_types = sanitize_text_field($_POST['fixed_types'][$i]);
+                    $fixed_headers[$i] = sanitize_text_field($_POST['fixed_headers'][$i]);
+                    $fixed_header_types[$i] = sanitize_text_field($_POST['fixed_types'][$i]);
                 }
 
                 $total_header_names = array_merge($fixed_headers,$Header_Names);
@@ -97,7 +97,7 @@ function map_visualizer_create_file_page()
                 }
                 if (!empty($_POST['table_name']))
                 {
-                    $file_name = sanitize_file_name($_POST['table_name']);
+                    $file_name = sanitize_file_name($_POST['table_name']).'_csv';
                 }
                 else
                 {
@@ -127,7 +127,7 @@ function map_visualizer_create_file_page()
                 if (($err_data =="") && ($err_Types =="") && ($err_Header =="") && ($err_data_match =="") && ($err_filename ==""))
                 {
                     $result = map_visualizer_import_to_db($file_name, $total_header_names,$total_header_types, $data);
-                    if($result == "")
+                    if($result == "Table created successfully")
                     {
                         $Header_Num = $Rows_Num = "";
                         unset($step);
@@ -326,10 +326,8 @@ function map_visualizer_import_to_db($table_name, $headers,$types, $data)
         {
             return $wpdb->last_error;
         }
-        $myfile = fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "a") or die("Unable to open file!");
-        $txt = $table_name . "\r\n";
-        fwrite($myfile, $txt);
-        fclose($myfile);
+        //Add to Imported_files table
+        $wpdb->insert('Imported_files',array('Name' => $table_name));
         return "Table created successfully";
     }
     else

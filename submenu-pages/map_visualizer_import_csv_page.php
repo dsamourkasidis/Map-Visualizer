@@ -22,15 +22,19 @@ function map_visualizer_import_csv_page()
                 $csv->map_visualizer_import();
                 if (empty($csv->error)) {
                     //Store file name in Imported_files.txt
-                    $contents = file_get_contents(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt");
-                    if (strpos($contents, $csv->table_name . "\r\n") === false) {
-                        $myfile = fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "a") or die("Unable to open file!");
-                        $txt = $csv->table_name . "\r\n";
-                        fwrite($myfile, $txt);
-                        fclose($myfile);
+                    global $wpdb;
+                    $imported = $wpdb->get_col("SELECT Imported_files.Name FROM Imported_files");
+                    if (!in_array($csv->table_name,$imported))
+                    {
+                        //Add file name to Imported_files table
+                        $wpdb->insert('Imported_files',array('Name' => $csv->table_name));
+                        //Give a success message
+                        $import_result = "File Imported successfully";
                     }
-                    //Give a success message
-                    $import_result = "File Imported successfully";
+                    else
+                    {
+                        $import_result = "File already imported";
+                    }
                 } else {
                     $import_result = $csv->error;
                 }

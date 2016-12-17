@@ -22,22 +22,22 @@ function map_visualizer_scripts() {
 }
 
 function map_visualizer_activate() {
-    wp_mkdir_p(wp_upload_dir()['basedir'].'/Map-Visualizer');
-    $myfile =fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "a") or die("Unable to open file!");
-    fclose($myfile);
+    global $wpdb;
+    //Create a table where all imported file names will be stored
+    $sql = "CREATE TABLE IF NOT EXISTS Imported_files (`Name` TEXT)";
+    $wpdb->query($sql);
 }
 
 function map_visualizer_unistall(){
-    $myfile =fopen(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt", "r") or die("Unable to open file!");
+    //Delete all tables on uninstall
     global $wpdb;
-    while (!feof($myfile)) {
-        $name = fgets($myfile);
-        $name = str_replace("\r\n", '', $name);
+    $imported = $wpdb->get_col("SELECT Imported_files.Name FROM Imported_files");
+    for($i=0;$i<sizeof($imported);$i++) {
+        $name = $imported[$i];
         $sql = "DROP TABLE $name";
         $wpdb->query($sql);
     }
-    unlink(wp_upload_dir()['basedir'] . "/Map-Visualizer/Imported_files.txt");
-    rmdir(wp_upload_dir()['basedir'].'/Map-Visualizer');
+    $wpdb->query("DROP TABLE Imported_files");
 }
 
 function map_visualizer_init(){
